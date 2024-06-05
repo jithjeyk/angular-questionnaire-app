@@ -1,0 +1,60 @@
+<div class="question-container w-full mx-auto h-screen flex flex-col items-center justify-center bg-fixed bg-no-repeat bg-cover bg-center"
+    *ngIf="(quizzes$ | async) as quizzes;">
+    <div *ngIf="!submitted && !validationMessage; else finalResult">
+        <div *ngIf="quizzes.length; else noQuestions">
+            <ng-container *ngIf="currentQuestionIndex < quizzes.length">
+                <form [formGroup]="questionnaireForm" (ngSubmit)="onSubmit()">
+                    <div formArrayName="answers">
+                        <div class="question-group">
+                            <div class="bg-white/90 shadow-md rounded-md border-dashed border-2 border-sky-500 m-4 px-2 py-5">
+                                <label
+                                    class="text-center text-3xl md:text-4xl mx-2 font-bold max-w-sm md:max-w-2xl break-words block">{{currentQuestionIndex + 1}}.{{
+                                    quizzes[currentQuestionIndex].question }}</label>
+                            </div>
+                            <div
+                                class="block min-w-72 p-2 m-4 items-center justify-center shadow-md rounded-md border-dashed border-2 border-sky-500">
+                                <div *ngFor="let option of quizzes[currentQuestionIndex].options; let j = index"
+                                    class="py-2 max-w-xs md:max-w-xl break-words">
+                                    <input type="radio" class="w-[20px] h-[20px] mr-1"
+                                        [formControlName]="currentQuestionIndex.toString()" [value]="j.toString()" />
+                                    <span class="text-2xl font-bold">{{j + 1}}. {{ option }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <button type="button" class="block min-w-72 btn text-xs p-2 mr-2 mt-2"
+                            (click)="createNewQuestionnaire()">Quit</button>
+                        <button type="button" class="btn text-xs p-2 mr-2 mt-2" (click)="previousQuestion()"
+                            *ngIf="currentQuestionIndex > 0">Previous
+                            Question</button>
+                        <button type="button" class="btn text-xs p-2 mr-2 mt-2" (click)="nextQuestion()"
+                            *ngIf="currentQuestionIndex < quizzes.length - 1">Next Question</button>
+                        <button type="submit" class="btn text-xs p-2 mt-2"
+                            *ngIf="currentQuestionIndex === quizzes.length - 1 && questionnaireForm.valid">Submit</button>
+                    </div>
+                </form>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #finalResult>
+    <p
+        class="bg-white/90 text-2xl md:text-4xl text-center font-bold p-4 md:p-6 m-4 md:m-0 shadow-md rounded-md border-dashed border-2 border-sky-500">
+        {{ validationMessage }}</p>
+    <div class="flex justify-center mt-4">
+        <button *ngIf="score < passMark" type="button" class="btn text-xs p-2 mr-2"
+            (click)="retakeAssessment()">Retake</button>
+        <button type="button" class="btn text-xs p-2" (click)="createNewQuestionnaire()">Create New
+            Questionnaire</button>
+    </div>
+</ng-template>
+<ng-template #noQuestions>
+    <div class="flex flex-col text-center items-center justify-center px-4">
+        <p class="bg-white/90 p-6 shadow-md rounded-md border-dashed border-2 border-sky-500">No questions available. Please create
+            a
+            questionnaire first.</p>
+        <button type="button" class="w-[170px] btn text-xs p-2 mt-4" (click)="createNewQuestionnaire()">Create New
+            Questionnaire</button>
+    </div>
+</ng-template>

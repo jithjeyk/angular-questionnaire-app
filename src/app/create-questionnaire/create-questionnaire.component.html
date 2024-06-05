@@ -1,0 +1,94 @@
+<div class="question-container w-full mx-auto h-screen bg-fixed bg-no-repeat bg-cover bg-center">
+    <div class="flex items-center justify-center px-4 py-5">
+        <div class="w-[984px] shadow-md rounded border-dashed border-2 border-sky-500 py-5">
+            <h2 class="text-3xl md:text-5xl text-center">Create Questionnaire</h2>
+            <h3 class="text-1xl md:text-3xl text-center">Please add atleast {{minimumQuestionCount}} questions to start Quiz!</h3>
+        </div>
+    </div>
+    <div class="flex items-center justify-center">
+        <div class="w-full max-h-[511px] px-4 flex flex-col md:flex-row md:justify-center md:space-x-4">
+            <div class="md:w-[484px] rounded border-dashed border-2 border-sky-500">
+                <div
+                    class="flex flex-row pl-5 py-2 text-lg font-medium space-x-2 border-dashed border-b-2 border-sky-500 text-black rounded-t-sm">
+                    <div>Question Number</div>
+                    <div><app-counter /></div>
+                </div>
+                <form [formGroup]="questionnaireForm" (ngSubmit)="onSubmit()" class="p-6">
+                    <div formArrayName="questions">
+                        <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i">
+                            <textarea rows="2" formControlName="question" placeholder="Enter question"
+                                class=" w-full p-2 rounded border-dashed border-2 border-black"></textarea>
+                            <div formArrayName="options" class="py-2">
+                                <div *ngFor="let option of getOptionControls(question).controls; let j = index"
+                                    [formGroupName]="j" class="">
+                                    <input type="text" formControlName="optionText" placeholder="Answer {{j + 1}}"
+                                        class="w-full p-2 my-2 rounded border-dashed border-2 border-black" />
+                                </div>
+                            </div>
+                            <label>Correct Answer :-</label>
+                            <div class="grid grid-flow-col auto-cols-max">
+                                <div *ngFor="let opt of getOptionControls(question).controls; let k = index">
+                                    <label class="mx-2">
+                                        <span class="mr-1">{{k + 1}}.</span><input type="radio" formControlName="answer"
+                                            class="w-[15px] h-[15px]" [value]="k">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="flex flex-col md:flex-row mt-2 space-y-2 md:space-y-0 justify-center">
+                                <button type="button" class="btn text-xs p-2 md:mr-2" (click)="addQuestion()">Add
+                                    Question</button>
+                                <button *ngIf="questionnaireCount > minimumQuestionCount" type="submit"
+                                    class="btn text-xs md:mr-2 p-2">Start
+                                    Quiz!</button>
+                                <button *ngIf="questionnaireCount > minimumQuestionCount" type="button"
+                                    class="btn text-xs p-2" (click)="resetQuestionnaire()">Rest
+                                    Quiz!</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="md:w-[484px] mt-5 md:mt-0">
+                <div
+                    class="pl-5 py-2 text-lg font-medium space-x-2 border-dashed border-x-2 border-t-2 border-sky-500 text-black rounded-t-sm rounded-b-none">
+                    <div>Questionnaire</div>
+                </div>
+                <div class="h-[464px] overflow-y-auto mb-10 rounded border-dashed border-2 border-sky-500">
+                    <div *ngIf="(quizzes$ | async) as quizzes">
+                        <ng-container *ngIf="quizzes.length; else noQuizzes">
+                            <div *ngFor="let quiz of quizzes; let i = index"
+                                class="min-w-[150px] px-4 px-2 pt-2 pb-3 m-2 shadow-md rounded border-dashed border-2 border-black">
+                                <div *ngIf="quiz.question">
+                                    <label class="text-xs font-black">Question {{i + 1}}: <span
+                                            class="italic">{{quiz.question}}</span></label>
+                                </div>
+                                <div class="p-2 rounded border-dashed border-2 border-sky-500">
+                                    <div *ngFor="let option of quiz.options let j = index">
+                                        <p class="text-xs text-lg">{{j + 1}}.
+                                            {{option}}</p>
+                                    </div>
+                                </div>
+                                <label class="pb-2 text-xs text-lg font-black">Correct Answer: {{quiz.answer +
+                                    1}}</label>
+                                <div class="text-right">
+                                    <button type="button" class="btn text-xs px-4 py-2"
+                                        (click)="removeQuestion(quiz.id)">Delete</button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <ng-template #noQuizzes>
+                    <div class="h-[464px] flex items-center justify-center">
+                        <div
+                            class="md:w-[300px] mx-2 px-6 py-8 text-center rounded border-dashed border-2 border-sky-500">
+                            <p class="text-black font-bold">empty</p>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

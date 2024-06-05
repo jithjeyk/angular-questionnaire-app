@@ -1,0 +1,19 @@
+/* create-questionnaire.component.css */
+.question-container {
+  background-image: url("../../assets/quiz-bg-5.jpeg");
+}
+.btn {
+  min-width: 100px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  border-radius: 8px;
+  transition: background-color 0.5s ease, transform 0.5s ease;
+  border: 1px solid black;
+}
+
+.btn:hover {
+  background-color: white;
+  color: black;
+  transition: 0.5s ease-in-out;
+}
