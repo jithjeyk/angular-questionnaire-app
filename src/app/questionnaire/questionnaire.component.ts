@@ -24,7 +24,6 @@ export class QuestionnaireComponent implements OnInit {
   quizArray: Quiz[] = [];
   passMark: number = 60;
   currentQuestionIndex: number = 0;
-  answersArray: number[] = [];
 
   constructor(private fb: FormBuilder, private store: Store<AppState>, private router: Router) {
     this.quizzes$ = this.store.select(selectAllQuizzes);
@@ -54,20 +53,10 @@ export class QuestionnaireComponent implements OnInit {
     this.questionnaireForm.setControl('answers', answersArray);
   }
 
-  nextQuestion() {
+  nextQuestion(): void {
     const currentAnswer = this.questionnaireForm.controls['answers'].value[this.currentQuestionIndex];
-    // this.answersArray.push(currentAnswer);
-    console.log('answer-array', this.questionnaireForm.controls['answers'].value[this.currentQuestionIndex]);
-    console.log('currentIndex', this.currentQuestionIndex);
-    
     if (currentAnswer !== '') {
-      if (this.currentQuestionIndex < this.quizArray.length - 1) {
-        this.questionnaireForm.reset();
-        this.currentQuestionIndex++;
-      }
-      console.log('after-increment', this.currentQuestionIndex);
-      console.log('answersArray', this.answersArray);
-      
+      this.currentQuestionIndex++;
     } else {
       alert('Please select one answer!');
     }
@@ -99,6 +88,7 @@ export class QuestionnaireComponent implements OnInit {
       alert('Please answer all questions!');
       // this.validationMessage = 'Please answer all questions!';
     }
+
   }
 
   validateAnswers(answers: string[]): boolean {
