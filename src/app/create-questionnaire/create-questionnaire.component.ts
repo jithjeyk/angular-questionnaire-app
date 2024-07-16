@@ -25,7 +25,7 @@ export class CreateQuestionnaireComponent implements OnInit {
   questionnaireId: number = 0;
   count$: Observable<number>;
   quizzes$: Observable<Quiz[]>;
-  minimumQuestionCount: number = 2;
+  minimumQuestionCount: number = 10;
 
   // Define the hardcoded quiz array
   // hardcodedQuizzes: Quiz[] = [
